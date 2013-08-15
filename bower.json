@@ -1,0 +1,11 @@
+{
+  "name": "streamhub-most-liked",
+  "version": "0.0.0",
+  "main": [
+    "./src/main.js"
+  ],
+  "dependencies": {
+    "streamhub-sdk": "git@github.com:Livefyre/streamhub-sdk.git",
+    "jquery": "~1.9.1"
+  }
+}

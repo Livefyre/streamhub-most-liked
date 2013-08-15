@@ -1,0 +1,20 @@
+{
+  "name": "streamhub-most-liked",
+  "description": "Livefyre Streamhub Module - Most Liked",
+  "author": "Livefyre <support@livefyre.com>",
+  "contributors": {
+    "name": "Derek Chinn",
+    "email": "derek@livefyre.com"
+  },
+  "version": "0.0.0",
+  "dependencies": {
+    "bower": "*",
+    "http-server": "*"
+  },
+  "scripts": {
+    "postinstall": "./node_modules/bower/bin/bower install ",
+    "start": "./node_modules/http-server/bin/http-server ."
+  },
+  "devDependencies": {
+  }
+}
