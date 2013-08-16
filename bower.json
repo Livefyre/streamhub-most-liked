@@ -6,6 +6,7 @@
   ],
   "dependencies": {
     "streamhub-sdk": "git@github.com:Livefyre/streamhub-sdk.git",
-    "jquery": "~1.9.1"
+    "stream": "git@github.com:Livefyre/stream.git",
+    "jquery": "1.x"
   }
 }
