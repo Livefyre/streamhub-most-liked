@@ -1,19 +1,37 @@
 define([
 	"jquery",
-	"streamhub-sdk",
 	"stream/readable",
-	"stream/util",
-	"src/clients/most-liked-client"
+	"src/clients/most-liked-client",
+	"state-to-content",
+	"streamhub-sdk/debug",
+	"streamhub-sdk/content/types/oembed",
+	"inherits"
 ], function(
     $,
-    SDK,
     Readable,
-    Util,
-    LivefyreMostLikedClient
+    LivefyreMostLikedClient,
+    StateToContent,
+    Debug,
+    Oembed,
+    Inherits
 ) {
 	"use strict";
-    var log = SDK.debug('streamhub-most-liked/src/streams/most-liked-stream');
+    var log = Debug('streamhub-most-liked/src/streams/most-liked-stream');
 	
+    
+    /**
+     * Constructor for Most Liked content.
+     * 
+     * @constructor
+     * @augments Readable https://github.com/Livefyre/stream/src/readable.js
+     * @param {Object} opts Configuration parameters for a Most Liked stream.
+     * @param {string} opts.network Your Livefyre network (e.g. example.fyre.co)
+     * @param {string} opts.siteId Your Livefyre site Id (e.g. 123456789)
+     * @param {string} opts.articleId The article Id associated with the conversation
+     * that you want to grab the "Most Liked" content for.
+     * @param {string} [opts.environment = livefyre.com] The domain URL that corresponds
+     * to the environment you want to target (e.g. t402.livefyre.com)
+     */
 	var LivefyreMostLikedStream = function (opts) {
 		this.opts = opts || {};
 
@@ -24,8 +42,15 @@ define([
         this._contentToPush = [];
         Readable.call(this);
 	};
-	Util.inherits(LivefyreMostLikedStream, Readable);
+	Inherits(LivefyreMostLikedStream, Readable);
 	
+	/**
+	 * The method called in order to pull the Most Liked data, parse it
+	 * and then emit a "readable" call such that it can eventually be
+	 * rendered.
+	 * 
+	 * @private
+	 */
 	LivefyreMostLikedStream.prototype._read = function () {
 		/*
 		 * Save "this" for later when we do the callback of "getContents" such
@@ -58,7 +83,6 @@ define([
 			var allContent = data.content;
 			for (var i = 0, contentLen = allContent.length; i < contentLen; i++) {
 				var state = allContent[i];
-				state.author = authors[state.content.authorId];
 				self._buildContentFromState(state, authors);
 			}
 			
@@ -75,13 +99,20 @@ define([
 		});
 	};
 	
+	/**
+	 * Transforms a state into a piece of display-able content
+	 * 
+	 * @param state {JSON Object} A raw "Most Liked" state from the request 
+	 * @param authors {Object} An associative array used to look up authors
+	 * @returns
+	 */
 	LivefyreMostLikedStream.prototype._buildContentFromState = function (state, authors) {
 		/*
-		 * TODO (Derek): This should not be referencing LivefyreStream to process content,
+		 * TODO (Derek?): This should not be referencing LivefyreStream to process content,
 		 * but for sake of not duplicating code, just reusing this. Ultimately, it needs
 		 * to be broken out to it's own "Content" constructor/method.
 		 */
-		var content = SDK.Streams.LivefyreStream.createContent(state);
+		var content = StateToContent.transform(state, authors[state.content.authorId]);
 		
 		if (content) {
 			this._contentToPush.push(content);
@@ -92,7 +123,7 @@ define([
 		for (var i = 0, childrenLen = children.length; i < childrenLen; i++) {
 			var childContent = this._buildContentFromState(children[i], authors);
 			
-			if (childContent instanceof SDK.Content.Types.Oembed) {
+			if (childContent instanceof Oembed) {
 				content.addAttachment(childContent);
 			}
 		}
