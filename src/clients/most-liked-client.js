@@ -1,4 +1,4 @@
-define(["src/clients/livefyre-most-base-client"], function(BaseClient) {
+define(["src/clients/most-base-client"], function(BaseClient) {
 	/*
 	 * TODO (Derek)?: Not sure if I need to inherit any base
 	 * constructor's members yet, but if we do, need to change

@@ -1,11 +1,13 @@
 {
-  "name": "streamhub-most-liked",
-  "version": "0.0.0",
-  "main": [
-    "./src/main.js"
-  ],
-  "dependencies": {
-    "streamhub-sdk": "git@github.com:Livefyre/streamhub-sdk.git",
-    "jquery": "~1.9.1"
-  }
+    "name":"streamhub-most-liked",
+    "version":"0.0.0",
+    "main":[
+        "./src/main.js"
+    ],
+    "dependencies":{
+        "streamhub-sdk":"git@github.com:Livefyre/streamhub-sdk.git#9b2688d7caef4679b8d95c539ba1e92e2f3fc213",
+        "stream":"git@github.com:Livefyre/stream.git",
+        "jquery":"1.x",
+        "inherits":"git@github.com:Livefyre/inherits.git"
+    }
 }
